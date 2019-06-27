@@ -87,7 +87,8 @@ def searchItem(table, data):
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
         if table == 'Parts':
-            sql = 'select * from Parts where partName=?, partSize=?, partMetal=?, partAvailability=?, partLocation=?'
+            #sql = 'select * from Parts where partName=?, partSize=?, partMetal=?, partAvailability=?, partLocation=?'
+            cursor.execute('select * from Parts where partName=? or partSize=? or partMetal=? or partAvailability=? or partLocation=?', (data,))
 
         elif table == 'Brains':
             sql = 'select * from Brains where brainNumber=?, brainCondition=?, brainCompetition=?, brainLocation=?'
@@ -102,9 +103,8 @@ def searchItem(table, data):
             sql = 'select * from Wheels where wheelType=?, wheelQuantity=?, wheelLocation=?'
 
         elif table == 'Others':
-            sql = 'select * from Others where otherNmae=?, otherDescription=?, otherLocation=?'
+            sql = 'select * from Others where otherName=?, otherDescription=?, otherLocation=?'
             
-        cursor.execute(sql, data)
         results = cursor.fetchall()
         return results
 
