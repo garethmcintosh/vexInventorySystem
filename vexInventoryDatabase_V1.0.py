@@ -1,10 +1,8 @@
-# To do list :
-# Work on error handling of data inputted into sql
-
 import sqlite3, sys
 from beautifultable import BeautifulTable
 
-def createTable(dbName, tableName, sql):
+# SQL functions
+def createTable(dbName, tableName, sql): # function to re-format a table
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
         cursor.execute('select name from sqlite_master where name=?', (tableName,))
@@ -27,7 +25,7 @@ def createTable(dbName, tableName, sql):
             cursor.execute(sql)
             db.commit()
 
-def insertItem(values, dbName, table):
+def insertItem(values, dbName, table): # function to insert an item into a table
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
         if table == 'Parts':
@@ -51,7 +49,7 @@ def insertItem(values, dbName, table):
         cursor.execute(sql, values)
         db.commit()
 
-def editItem(data, dbName, table):
+def editItem(data, dbName, table): # function to edit an item within a table
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
         if table == 'Parts':
@@ -75,14 +73,14 @@ def editItem(data, dbName, table):
         cursor.execute(sql, data)
         db.commit()
 
-def removeItem(data, table):
+def removeItem(data, table): # function to remove an item from a table
     dbName = 'vexInventory.db'
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
         cursor.execute('delete from ' + table + ' where productID=?', (data,))
         db.commit()
 
-def searchItem(table, data, query):
+def searchItem(table, data, query): # function to search for an item within a table
     dbName = 'vexInventory.db'
     with sqlite3.connect(dbName) as db:
         cursor = db.cursor()
@@ -90,7 +88,8 @@ def searchItem(table, data, query):
         results = cursor.fetchall()
         return results
 
-def gatherItemSearch():
+# normal python functions
+def gatherItemSearch(): # function to gather item to search for
     global tableList
     print(tableList)
     resultsPrint = BeautifulTable()
@@ -209,7 +208,7 @@ def gatherItemSearch():
     print('\n')
     print(resultsPrint)
         
-def userLogin():
+def userLogin(): # function for a user log in to navigate the program
     global userOptionList
     while True:
         print(userOptionList)
@@ -233,7 +232,7 @@ def userLogin():
             input('Enter to continue...')
 
 
-def adminLogin():
+def adminLogin(): # function for an admin log in to navigate the program
     global adminOptionList
     while True:
         print(adminOptionList)
@@ -262,7 +261,7 @@ def adminLogin():
             print('Error : Please input a number associated with an option')
             input('Enter to continue...')
             
-def deleteItem():
+def deleteItem(): # function to gather item to delete from a table
     global tableList
     print (tableList)
     tableChoice = input('Table Choice : ')
@@ -336,7 +335,7 @@ def deleteItem():
 
     
 
-def addItem():
+def addItem(): # function to gather item to add to a table
     dbName = 'vexInventory.db'
     while True:
         print('Please choose a category to append')
@@ -437,7 +436,7 @@ def addItem():
             input('Enter to continue...')
     
 
-def recreateTable():
+def recreateTable(): # function to choose which table to re-create
     global tableList
     print (tableList)
     tableChoice = input('Table to recreate : ')
@@ -516,7 +515,7 @@ def recreateTable():
         input('Enter to continue...')
     
 
-def chooseLogin():
+def chooseLogin(): # starting function to log in to the program with different permission levels
     global operatorLevelPrint
     while True:
         print(operatorLevelPrint)
@@ -556,7 +555,7 @@ def chooseLogin():
             print('Error : Please input a number associated with an option')
             input('Enter to continue...')
 
-def itemEditor(operatorLevel):
+def itemEditor(operatorLevel): # function to gather information to edit an item
     dbName = 'vexInventory.db'
     while True:
         print('Please choose a category to edit')
@@ -667,6 +666,7 @@ def itemEditor(operatorLevel):
             print('Error : Please input a number associated with an option')
             input('Enter to continue...')
 
+# Lists for global use
 tableList = ('''
 1. Parts
 2. Brains
