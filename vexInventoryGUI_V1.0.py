@@ -6,11 +6,10 @@ from tkinter.ttk import *
 import sqlite3, sys
 from beautifultable import BeautifulTable
 
-class Main(tk.Tk):
+class Main(tk.Tk): # main class setting the program's framework
     def __init__(self, **kwargs):
         tk.Tk.__init__(self, **kwargs)
 
-        #~ self.protocol('WM_DELETE_WINDOW', self.callback)
         self.geometry('1024x768')
         self.title('Vex Inventory System')
         self.resizable(0, 0)
@@ -24,17 +23,13 @@ class Main(tk.Tk):
             f = frame(self)
             f.grid(row=0, column=0, sticky='nsew')
             self.frames[frame] = f
-        self.switch(homePage) # set the starting frame
+        self.switch(homePage) # setting the starting frame
 
-    def switch(self, frame):
+    def switch(self, frame): # function to switch between frames when called
         self.frames[frame].tkraise()
 
-    def callback(self):
-        if tkinter.messagebox.askokcancel('Quit', 'Do you really wish to quit?'):
-            self.destroy()
-
-class homePage(tk.Frame):
-    def __init__(self, master=None, **kwargs):
+class homePage(tk.Frame): # homepage frame 
+    def __init__(self, master=None, **kwargs): 
         tk.Frame.__init__(self, master, **kwargs)
 
         # display title image
@@ -69,8 +64,8 @@ class homePage(tk.Frame):
     def quit(self):
         exit()
 
-class searchPage(tk.Frame):
-    def __init__(self, master=None, **kwargs):
+class searchPage(tk.Frame): # item searching frame
+    def __init__(self, master=None, **kwargs): # initialising the frame
         tk.Frame.__init__(self, master, **kwargs)
 
         self.vexTitle_img = tk.PhotoImage(file = 'vexTitle.png')
@@ -84,7 +79,7 @@ class searchPage(tk.Frame):
 
         self.chooseSearchCategory()
 
-    def chooseSearchCategory(self):
+    def chooseSearchCategory(self): # function to get category to search within
         text = tk.Label(self, text='Choose category to search : ')
         text.place(x=250, y=300)
         self.box_value = tk.StringVar()
@@ -94,7 +89,7 @@ class searchPage(tk.Frame):
         self.comboBox.place(x=250, y=325)
         self.comboBox.current(0)
 
-    def searchTable(self, event):
+    def searchTable(self, event): # function to get table to search within
         global table, partValues, brainValues, gearValues, motorValues, wheelValues, otherValues
         tableChoice = self.comboBox.get()
         table = self.comboBox.get()
@@ -122,7 +117,7 @@ class searchPage(tk.Frame):
         self.comboBoxTwo.place(x=250, y=350)
         self.comboBoxTwo.current(0)
 
-    def getSearchQuery(self, event):
+    def getSearchQuery(self, event): # final search function
         global table, partsColumnHeaders, brainsColumnHeaders, gearsColumnHeaders, motorsColumnHeaders, wheelsColumnHeaders, othersColumnHeaders
         print('Table = ' + table)
         query = self.comboBoxTwo.get()
@@ -131,7 +126,7 @@ class searchPage(tk.Frame):
         text.place(x=425, y=300)
         textEntry = Entry(root, width=20)
         textEntry.place(x=425, y=325)
-        def clicked():
+        def clicked(): # function that gets called once the search button is clicked
             print(textEntry.get())
             searchData = textEntry.get()
             print('Search Data = ' + searchData)
@@ -174,8 +169,8 @@ class searchPage(tk.Frame):
         clickedButton = tk.Button(root, text='Search', command=clicked)
         clickedButton.place(x=575, y=320)
 
-class indexPage(tk.Frame):
-    def __init__(self, master=None, **kwargs):
+class indexPage(tk.Frame): # table indexing frame
+    def __init__(self, master=None, **kwargs): # initialising the frame
         tk.Frame.__init__(self, master, **kwargs)
 
         self.vexTitle_img = tk.PhotoImage(file = 'vexTitle.png')
@@ -188,7 +183,7 @@ class indexPage(tk.Frame):
 
         self.getIndexTable()
 
-    def getIndexTable(self):
+    def getIndexTable(self): # function to find which category to display
         text = Label(self, text='Choose category to display : ')
         text.place(x=250, y=300)
         self.box_value = tk.StringVar()
@@ -198,14 +193,13 @@ class indexPage(tk.Frame):
         self.comboBox.place(x=250, y=325)
         self.comboBox.current(0)
 
-    def showIndexTable(self, event):
+    def showIndexTable(self, event): # function to get category and display onto the GUI
         global partsColumnHeaders, brainsColumnHeaders, gearsColumnHeaders, motorsColumnHeaders, wheelsColumnHeaders, othersColumnHeaders
         columnHeadersList = [partsColumnHeaders, brainsColumnHeaders, gearsColumnHeaders, motorsColumnHeaders, wheelsColumnHeaders, othersColumnHeaders]
         tableList = ('Parts', 'Brains', 'Gears', 'Motors', 'Wheels', 'Others')
         table = self.comboBox.get()
         results = dbSearchAll(table)
-        # creating the Beautiful Table for printing
-        tablePrint = BeautifulTable()
+        tablePrint = BeautifulTable() # creating the Beautiful Table for printing
         tablePrint.set_style(BeautifulTable.STYLE_COMPACT)
         i = 0
         for i in range(len(tableList)):
@@ -223,7 +217,6 @@ class indexPage(tk.Frame):
                 memberList.append(member)
             tablePrint.append_row(memberList)
 
-        # results text widget with scrollbar
         scrollBar = Scrollbar(self)
         scrollBar.pack(side=RIGHT, fill=Y)
         resultsText = Text(self, height=10, width=75)
@@ -233,7 +226,7 @@ class indexPage(tk.Frame):
         resultsText.insert(END, tablePrint) # inserting data into text widget
         
         editSearchEntry = Entry(root, width=20)
-        editSearchEntry.place(x=450, y=325)
+        editSearchEntry.place(x=450, y=325) # placing an entry box for user to edit an item from the displayed index
         indexText = Label(root, text='Choose index number to edit : ')
         indexText.place(x=450, y=300)
         def clickedSearch():
@@ -245,10 +238,10 @@ class indexPage(tk.Frame):
         print(tablePrint)
 
         deleteItemSearchEntry = Entry(root, width=20)
-        deleteItemSearchEntry.place(x=700, y=325)
+        deleteItemSearchEntry.place(x=700, y=325) # placing an entry box for user to remove an item form the displayed index
         deleteText = Label(root, text='Choose index number to remove : ')
         deleteText.place(x=700, y=300)
-        def clickedDelete():
+        def clickedDelete(): # item removal function called when user clicks delete button
             indexNumber = deleteItemSearchEntry.get()
             dbRemoveItem(indexNumber, table)
             tablePrint = BeautifulTable()
@@ -299,7 +292,7 @@ class indexPage(tk.Frame):
             data.append(value)
             
         i = 0
-        for i in range(len(itemValues)):
+        for i in range(len(itemValues)): # loop that allows user to input new values or keep the old ones for an item
             valueForEditText = Label(self, text='Input "keep" to keep the same value or input new value for : ')
             valueForEditText.place(x=250, y=350)
             valueForEdit = Text(self, height=1, width=20)
@@ -336,7 +329,7 @@ class indexPage(tk.Frame):
         resultsText.update()
 
 
-class insertDataPage(tk.Frame): 
+class insertDataPage(tk.Frame): # frame for inserting data into a table
     def __init__(self, master=None, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
 
@@ -360,7 +353,7 @@ class insertDataPage(tk.Frame):
         self.comboBox.place(x=250, y=325)
         self.comboBox.current(0)
 
-    def insertData(self, event):
+    def insertData(self, event): # function to insert data into the table
         table = self.comboBox.get()
         global partsColumnHeaders, brainsColumnHeaders, gearsColumnHeaders, motorsColumnHeaders, wheelsColumnHeaders, othersColumnHeaders
         columnHeadersList = [partsColumnHeaders, brainsColumnHeaders, gearsColumnHeaders, motorsColumnHeaders, wheelsColumnHeaders, othersColumnHeaders]
@@ -437,7 +430,7 @@ class insertDataPage(tk.Frame):
         resultsText.update()
 
 #SQL Database functions
-def dbSearchItem(table, data, query):
+def dbSearchItem(table, data, query): # specific item search function
     with sqlite3.connect('vexInventory.db') as db:
         db.row_factory = sqlite3.Row
         cursor = db.cursor()
@@ -445,7 +438,7 @@ def dbSearchItem(table, data, query):
         results = cursor.fetchall()
         return results
 
-def dbSearchAll(table):
+def dbSearchAll(table): # function to search for an entire table
     with sqlite3.connect('vexInventory.db') as db:
         db.row_factory = sqlite3.Row
         cursor = db.cursor()
@@ -453,7 +446,7 @@ def dbSearchAll(table):
         results = cursor.fetchall()
         return results
 
-def dbEditItem(data, table):
+def dbEditItem(data, table): # function to edit items
     with sqlite3.connect('vexInventory.db') as db:
         cursor = db.cursor()
         if table == 'Parts':
@@ -477,13 +470,13 @@ def dbEditItem(data, table):
         cursor.execute(sql, data)
         db.commit()
 
-def dbRemoveItem(data, table):
+def dbRemoveItem(data, table): # function to remove items
     with sqlite3.connect('vexInventory.db') as db:
         cursor = db.cursor()
         cursor.execute('delete from ' + table + ' where productID=?', (data,))
         db.commit()
 
-def dbInsertItem(values, table):
+def dbInsertItem(values, table): # function to insert data
     with sqlite3.connect('vexInventory.db') as db:
         cursor = db.cursor()
         if table == 'Parts':
@@ -521,6 +514,6 @@ gearValues = ('gearStrength', 'gearTeeth', 'gearMaterial', 'gearQuanity', 'gearL
 motorValues = ('motorSize', 'motorNumber', 'motorCondition', 'motorSpeed', 'motorLocation')
 wheelValues = ('wheelType', 'wheelQuantity', 'wheelLocation')
 otherValues = ('otherName', 'otherDescription', 'otherLocation')
-        
+
 root = Main()
 root.mainloop()
